@@ -1,0 +1,42 @@
+name: Update Playlist
+
+on:
+  schedule:
+    # Every 6 hours at 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: "0 0,6,12,18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pyyaml
+        run: pip install pyyaml
+
+      - name: Aggregate sources
+        run: python3 scripts/aggregate.py --sources sources.yaml --out playlist.m3u
+
+      - name: Validate streams
+        run: python3 scripts/validate.py --in playlist.m3u --out playlist.m3u --timeout 10 --workers 30
+
+      - name: Commit playlist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add playlist.m3u
+          if git diff --cached --quiet; then
+            echo "No changes to playlist"
+          else
+            git commit -m "auto: refresh playlist $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

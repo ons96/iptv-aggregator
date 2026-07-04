@@ -1,0 +1,4 @@
+# Local test artifacts (playlist.m3u IS tracked - needed for raw URL)
+*.log
+__pycache__/
+*.pyc

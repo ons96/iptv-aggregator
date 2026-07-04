@@ -1,0 +1,17 @@
+# IPTV source playlists.
+# Add or remove sources here. Each entry is a URL to an M3U/M3U8 playlist.
+# The aggregator fetches all sources, merges, deduplicates by stream URL,
+# and validates liveness before publishing playlist.m3u.
+
+sources:
+  # iptv-org master playlist (CC0, ~8000+ channels, actively maintained)
+  - https://iptv-org.github.io/iptv/index.m3u
+
+  # iptv-org category: English-language channels
+  - https://iptv-org.github.io/iptv/languages/eng.m3u
+
+  # Free-TV (public aggregated playlist)
+  - https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8
+
+  # Example extra source (uncomment + edit to add your own):
+  # - https://example.com/your-source.m3u
